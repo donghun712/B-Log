@@ -23,7 +23,10 @@ Important: package names are unique and permanent in Play Console. Confirm this 
   - `public/pwa-icon-maskable-512.png`
 - Store listing Korean draft: present under `play-store/listing/ko-KR/`
 - Digital Asset Links file: create `public/.well-known/assetlinks.json` after the Play App Signing SHA-256 fingerprint is available
-- Final Android App Bundle (`.aab`): not generated yet
+- Final Android App Bundle (`.aab`): generated at `android-twa/app-release-bundle.aab`
+- Android package: `com.blog.b_log`, version code `1`, version name `1.0.0`
+- Android SDK: compile SDK 36, target SDK 35, minimum SDK 21
+- Upload signing key: generated locally at `android-twa/android-keystore` and excluded from Git
 - Play App Signing SHA-256 fingerprint: not available yet
 
 ## Required Play Store Items

@@ -1,0 +1,69 @@
+{
+  "packageId": "com.blog.b_log",
+  "host": "b-log-ffa4d.web.app",
+  "name": "B-Log",
+  "launcherName": "B-Log",
+  "display": "standalone",
+  "themeColor": "#EEF8FF",
+  "themeColorDark": "#000000",
+  "navigationColor": "#000000",
+  "navigationColorDark": "#000000",
+  "navigationDividerColor": "#000000",
+  "navigationDividerColorDark": "#000000",
+  "backgroundColor": "#EEF8FF",
+  "enableNotifications": false,
+  "startUrl": "/",
+  "iconUrl": "https://b-log-ffa4d.web.app/pwa-icon-512.png",
+  "maskableIconUrl": "https://b-log-ffa4d.web.app/pwa-icon-maskable-512.png",
+  "splashScreenFadeOutDuration": 300,
+  "signingKey": {
+    "path": "android-keystore",
+    "alias": "b-log-upload"
+  },
+  "appVersionName": "1.0.0",
+  "appVersionCode": 1,
+  "shortcuts": [
+    {
+      "name": "습사 기록",
+      "shortName": "기록",
+      "url": "https://b-log-ffa4d.web.app/home",
+      "chosenIconUrl": "https://b-log-ffa4d.web.app/pwa-icon-192.png"
+    },
+    {
+      "name": "기록 분석",
+      "shortName": "분석",
+      "url": "https://b-log-ffa4d.web.app/stats",
+      "chosenIconUrl": "https://b-log-ffa4d.web.app/pwa-icon-192.png"
+    },
+    {
+      "name": "랭킹",
+      "shortName": "랭킹",
+      "url": "https://b-log-ffa4d.web.app/ranking",
+      "chosenIconUrl": "https://b-log-ffa4d.web.app/pwa-icon-192.png"
+    }
+  ],
+  "generatorApp": "bubblewrap-cli",
+  "webManifestUrl": "https://b-log-ffa4d.web.app/manifest.webmanifest",
+  "fallbackType": "customtabs",
+  "features": {},
+  "alphaDependencies": {
+    "enabled": false
+  },
+  "enableSiteSettingsShortcut": true,
+  "isChromeOSOnly": false,
+  "isMetaQuest": false,
+  "fullScopeUrl": "https://b-log-ffa4d.web.app/",
+  "minSdkVersion": 21,
+  "orientation": "portrait",
+  "fingerprints": [],
+  "additionalTrustedOrigins": [],
+  "retainedBundles": [],
+  "protocolHandlers": [],
+  "fileHandlers": [],
+  "launchHandlerClientMode": "",
+  "displayOverride": [
+    "standalone",
+    "minimal-ui"
+  ],
+  "appVersion": "1.0.0"
+}
