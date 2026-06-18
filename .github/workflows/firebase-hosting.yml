@@ -112,11 +112,6 @@ jobs:
           GOOGLE_APPLICATION_CREDENTIALS: ${{ runner.temp }}/firebase-service-account.json
         run: npx --yes firebase-tools projects:list --json
 
-      - name: Deploy Firestore rules and indexes
-        env:
-          GOOGLE_APPLICATION_CREDENTIALS: ${{ runner.temp }}/firebase-service-account.json
-        run: npx --yes firebase-tools deploy --non-interactive --only firestore --project b-log-ffa4d
-
       - name: Deploy Firebase Hosting
         env:
           GOOGLE_APPLICATION_CREDENTIALS: ${{ runner.temp }}/firebase-service-account.json

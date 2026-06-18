@@ -64,7 +64,7 @@ npx firebase-tools deploy --only hosting,firestore --project b-log-ffa4d
 GitHub Actions workflow는 `.github/workflows/firebase-hosting.yml`에 있습니다.
 
 - Pull Request: `npm ci`, `npm run lint`, `npm run build`
-- `main` 또는 `master` push: 빌드 후 Firebase Hosting과 Firestore rules/indexes 배포
+- `main` 또는 `master` push: 빌드 후 Firebase Hosting 자동 배포
 
 GitHub Repository Secrets에 Firebase 프론트 환경변수와 서비스 계정 JSON을 등록해야 자동 배포가 동작합니다.
 
@@ -82,6 +82,12 @@ GitHub Repository Secrets에 Firebase 프론트 환경변수와 서비스 계정
 
 - `VITE_FIREBASE_FUNCTIONS_REGION`
 - `VITE_FIREBASE_KAKAO_PROVIDER_ID`
+
+Firestore rules/indexes는 권한 범위가 Hosting 배포와 다르므로 필요 시 아래 명령으로 수동 배포합니다.
+
+```bash
+npx firebase-tools deploy --only firestore --project b-log-ffa4d
+```
 
 ## Test Data Cleanup
 
