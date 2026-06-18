@@ -29,7 +29,7 @@ public class AdminUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) {
-        if (username.equals(superUsername)) {
+        if (!superUsername.isBlank() && !superPassword.isBlank() && username.equals(superUsername)) {
             return User.withUsername(superUsername)
                 .password("{noop}" + superPassword)
                 .authorities("ROLE_ADMIN", "ROLE_SUPER_ADMIN")

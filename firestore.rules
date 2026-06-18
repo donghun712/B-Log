@@ -15,6 +15,16 @@ service cloud.firestore {
         && get(/databases/$(database)/documents/groups/$(groupId)).data.ownerUserId == request.auth.uid;
     }
 
+    function groupMember(groupId, userId) {
+      return signedIn()
+        && exists(/databases/$(database)/documents/groups/$(groupId)/members/$(userId));
+    }
+
+    function groupMemberAfterUpdate(groupId, userId) {
+      return signedIn()
+        && existsAfter(/databases/$(database)/documents/groups/$(groupId)/members/$(userId));
+    }
+
     function adminAccount() {
       return get(/databases/$(database)/documents/adminAccounts/$(request.auth.uid)).data;
     }
@@ -90,8 +100,17 @@ service cloud.firestore {
         && request.resource.data.ownerUserId == request.auth.uid;
 
       allow update: if signedIn()
+        && (groupMember(groupId, request.auth.uid)
+          || groupMemberAfterUpdate(groupId, request.auth.uid))
         && request.resource.data.diff(resource.data).affectedKeys()
-          .hasOnly(['memberCount', 'updatedAt', 'updatedAtServer', 'ownerUserId']);
+          .hasOnly(['memberCount', 'updatedAt', 'updatedAtServer', 'ownerUserId'])
+        && (
+          request.resource.data.ownerUserId == resource.data.ownerUserId
+          || (
+            resource.data.ownerUserId == request.auth.uid
+            && groupMember(groupId, request.resource.data.ownerUserId)
+          )
+        );
       allow delete: if groupOwner(groupId);
 
       match /members/{userId} {

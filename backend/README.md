@@ -21,13 +21,13 @@ For local secrets, `config/local-secrets.properties` is loaded when present and 
 | `FIREBASE_ENABLED` | Set `true` outside local development to verify Firebase ID tokens. |
 | `FIREBASE_SERVICE_ACCOUNT` | Path to a Firebase Admin service account JSON file. |
 | `FIREBASE_PROJECT_ID` | Optional Firebase project id override. |
-| `DEV_AUTH_HEADERS_ENABLED` | Local-only fallback for `X-Blog-User-Id`; disable in production. |
+| `DEV_AUTH_HEADERS_ENABLED` | Local-only fallback for `X-Blog-User-Id`; disabled by default and must remain disabled in production. |
 | `OPENAI_API_KEY` | AI feedback and nearby summary proxy. |
 | `OPENAI_MODEL` | Responses API model, default `gpt-4.1-mini`. |
 | `KAKAO_REST_API_KEY` | Kakao Local keyword search for nearby place context. |
 | `KAKAO_LOGIN_CLIENT_SECRET` | Kakao Login REST token exchange client secret when the Kakao secret is enabled. |
-| `ADMIN_USERNAME` | Separate admin HTTP Basic username. |
-| `ADMIN_PASSWORD` | Separate admin HTTP Basic password. |
+| `ADMIN_USERNAME` | Separate admin HTTP Basic username; the fallback account is disabled when omitted. |
+| `ADMIN_PASSWORD` | Separate admin HTTP Basic password; required together with `ADMIN_USERNAME`. |
 
 ## Server-owned APIs
 
