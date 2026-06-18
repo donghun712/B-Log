@@ -1,17 +1,37 @@
 # B-Log
 
-국궁인을 위한 모바일 우선 시수 기록 PWA입니다. 현재 출시 방향은 Firebase Auth, Firestore, Firebase Hosting을 중심으로 운영하고, 상세 탄착군과 메모는 브라우저 로컬 IndexedDB에 보관하는 구조입니다.
+B-Log는 국궁 습사 기록을 모바일에서 간편하게 남기고, 기록 분석과 랭킹을 확인할 수 있는 PWA입니다. 현재 출시 경로는 Firebase Auth, Cloud Firestore, Firebase Hosting을 중심으로 구성되어 있으며, 상세 탄착 기록과 메모는 브라우저 로컬 IndexedDB에 저장합니다.
 
 ## Current Stack
 
 - React + TypeScript + Vite
 - Tailwind CSS
-- Firebase Auth
+- Firebase Authentication: Google 로그인, Kakao OIDC 로그인
 - Cloud Firestore
 - Firebase Hosting
-- Firebase Functions: 이전 관리자 구현 보관 코드. 현재 출시 경로에서는 사용하지 않음
-- Dexie.js: 로컬 상세 기록 저장
+- Dexie.js / IndexedDB
 - PWA manifest + service worker
+- GitHub Actions CI/CD
+
+`backend/`의 Spring Boot 서버와 `functions/`의 Firebase Functions 코드는 이전 구현 또는 보관용 코드입니다. 현재 기본 배포 대상은 Firebase Hosting과 Firestore rules/indexes입니다.
+
+## Features
+
+- Google/Kakao 로그인
+- 최초 프로필, 소속 활터, 등급, 활손, 기본 기록 방식 설정
+- 간단 기록 및 상세 탄착 기록
+- 기록 수정/삭제
+- 주간/월간 캘린더, 차트, 방향성/시간대 통계
+- 전체/소속 활터/그룹 랭킹
+- 그룹 생성, 초대코드 참여, 탈퇴
+- 관리자 권한 요청/승인
+- 최고 관리자 및 활터 관리자용 회원/기록 조회
+
+## Data Ownership
+
+- Firebase Auth: 로그인 계정과 인증 상태
+- Firestore: 프로필, 습사 요약 기록, 그룹, 그룹 멤버, 관리자 요청/권한, 활터 데이터
+- IndexedDB: 상세 탄착 기록, 메모, 로컬 캐시
 
 ## Run
 
@@ -34,20 +54,43 @@ npm run build
 npx firebase-tools deploy --only hosting,firestore --project b-log-ffa4d
 ```
 
-관리자 신청, 최고관리자 승인, 활터별 회원 조회는 현재 Firestore 직접 조회/저장과 Firestore Rules를 기준으로 동작합니다. Spark 요금제 유지를 위해 Firebase Functions는 기본 배포 대상에서 제외했습니다.
+배포 URL:
 
-## Data Ownership
+- https://b-log-ffa4d.web.app
+- https://b-log-ffa4d.firebaseapp.com
 
-- Firestore: 프로필, 요약 기록, 랭킹용 데이터, 그룹, 관리자 승인/권한
-- IndexedDB: 상세 탄착군, 메모, 오프라인/로컬 캐시
-- Firebase Auth: Google 로그인, Kakao OIDC 로그인, 관리자 권한 확인용 계정
+## CI/CD
 
-## Spring Boot Archive
+GitHub Actions workflow는 `.github/workflows/firebase-hosting.yml`에 있습니다.
 
-`backend/` 디렉터리는 이전 Spring Boot + JPA + H2/MySQL 백엔드 구현입니다. `functions/` 디렉터리는 이전 Firebase Functions 관리자 구현입니다. 둘 다 현재 Firebase 중심 출시 경로에서는 사용하지 않지만, 추후 이용자 증가나 백엔드 평가 요소가 필요할 때 참고하거나 재활용할 수 있습니다.
+- Pull Request: `npm ci`, `npm run lint`, `npm run build`
+- `main` 또는 `master` push: 빌드 후 Firebase Hosting과 Firestore rules/indexes 배포
 
-삭제 전에 다음을 확인하세요.
+GitHub Repository Secrets에 Firebase 프론트 환경변수와 서비스 계정 JSON을 등록해야 자동 배포가 동작합니다.
 
-- 기존 H2 데이터가 필요한지
-- Spring Boot 구현을 별도 백업할지
-- 관리자/랭킹/통계 기능을 다시 서버로 분리할 계획이 있는지
+필수 secrets:
+
+- `FIREBASE_SERVICE_ACCOUNT_B_LOG_FFA4D`
+- `VITE_FIREBASE_API_KEY`
+- `VITE_FIREBASE_AUTH_DOMAIN`
+- `VITE_FIREBASE_PROJECT_ID`
+- `VITE_FIREBASE_STORAGE_BUCKET`
+- `VITE_FIREBASE_MESSAGING_SENDER_ID`
+- `VITE_FIREBASE_APP_ID`
+
+선택 secrets:
+
+- `VITE_FIREBASE_FUNCTIONS_REGION`
+- `VITE_FIREBASE_KAKAO_PROVIDER_ID`
+
+## Test Data Cleanup
+
+테스트 기록과 그룹만 정리하는 전용 스크립트가 있습니다. Auth, 로그인 제공자, 프로필, 관리자 권한, 활터 데이터는 삭제하지 않습니다.
+
+```bash
+cd functions
+npm run cleanup:test-data -- --dry-run
+node scripts/cleanup-test-data.js --confirm
+```
+
+기본 실행은 dry-run입니다. 실제 삭제는 `--confirm`을 붙인 경우에만 수행됩니다.
