@@ -1,0 +1,106 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isSelf(userId) {
+      return signedIn() && request.auth.uid == userId;
+    }
+
+    function groupOwner(groupId) {
+      return signedIn()
+        && get(/databases/$(database)/documents/groups/$(groupId)).data.ownerUserId == request.auth.uid;
+    }
+
+    function adminAccount() {
+      return get(/databases/$(database)/documents/adminAccounts/$(request.auth.uid)).data;
+    }
+
+    function isSuperAdmin() {
+      return signedIn()
+        && adminAccount().active == true
+        && adminAccount().role == 'SUPER_ADMIN';
+    }
+
+    function isRangeAdminFor(rangeId) {
+      return signedIn()
+        && adminAccount().active == true
+        && adminAccount().role == 'RANGE_ADMIN'
+        && adminAccount().rangeId == rangeId;
+    }
+
+    match /profiles/{userId} {
+      allow read: if signedIn();
+      allow create: if isSelf(userId)
+        && request.resource.data.userId == userId;
+      allow update: if isSelf(userId)
+        && request.resource.data.userId == userId
+        && !request.resource.data.diff(resource.data).affectedKeys()
+          .hasAny(['disabled', 'disabledAt', 'disabledBy']);
+      allow update: if isSuperAdmin()
+        && request.resource.data.diff(resource.data).affectedKeys()
+          .hasOnly(['disabled', 'disabledAt', 'disabledBy', 'updatedAt']);
+      allow delete: if false;
+    }
+
+    match /adminAccounts/{adminId} {
+      allow get: if isSelf(adminId) || isSuperAdmin();
+      allow list: if isSuperAdmin();
+      allow create, update, delete: if isSuperAdmin();
+    }
+
+    match /adminRequests/{requestId} {
+      allow get: if isSelf(requestId) || isSuperAdmin();
+      allow list: if isSuperAdmin();
+      allow create, update: if isSelf(requestId)
+        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.status == 'PENDING';
+      allow delete: if isSuperAdmin();
+    }
+
+    match /archeryRanges/{rangeId} {
+      allow read: if signedIn();
+      allow write: if false;
+    }
+
+    match /practiceSummaries/{summaryId} {
+      allow read: if signedIn()
+        && (
+          resource.data.userId == request.auth.uid
+          || resource.data.isRankingPublic == true
+          || isSuperAdmin()
+          || isRangeAdminFor(resource.data.rangeId)
+        );
+      allow create: if signedIn()
+        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.clientSessionId == summaryId;
+      allow update: if signedIn()
+        && resource.data.userId == request.auth.uid
+        && request.resource.data.userId == request.auth.uid;
+      allow delete: if signedIn()
+        && resource.data.userId == request.auth.uid;
+    }
+
+    match /groups/{groupId} {
+      allow read: if signedIn();
+      allow create: if signedIn()
+        && request.resource.data.ownerUserId == request.auth.uid;
+
+      allow update: if signedIn()
+        && request.resource.data.diff(resource.data).affectedKeys()
+          .hasOnly(['memberCount', 'updatedAt', 'updatedAtServer', 'ownerUserId']);
+      allow delete: if groupOwner(groupId);
+
+      match /members/{userId} {
+        allow read: if signedIn();
+        allow create: if isSelf(userId)
+          && request.resource.data.userId == request.auth.uid;
+        allow update: if isSelf(userId) || groupOwner(groupId);
+        allow delete: if isSelf(userId) || groupOwner(groupId);
+      }
+    }
+  }
+}

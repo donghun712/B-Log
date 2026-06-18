@@ -1,0 +1,17 @@
+{
+  "name": "b-log-functions",
+  "private": true,
+  "engines": {
+    "node": "22"
+  },
+  "main": "index.js",
+  "scripts": {
+    "lint": "node --check index.js",
+    "cleanup:test-data": "node scripts/cleanup-test-data.js",
+    "seed:ranges": "node scripts/seed-archery-ranges.js"
+  },
+  "dependencies": {
+    "firebase-admin": "^13.6.0",
+    "firebase-functions": "^6.4.0"
+  }
+}

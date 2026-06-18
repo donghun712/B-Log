@@ -1,0 +1,59 @@
+{
+  "id": "/",
+  "name": "B-Log 시수기록",
+  "short_name": "B-Log",
+  "description": "국궁인을 위한 시수 기록앱",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "orientation": "portrait",
+  "background_color": "#eef8ff",
+  "theme_color": "#eef8ff",
+  "lang": "ko-KR",
+  "dir": "ltr",
+  "categories": ["sports", "productivity", "health"],
+  "icons": [
+    {
+      "src": "/pwa-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/pwa-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/pwa-icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "습사 기록",
+      "short_name": "기록",
+      "description": "오늘의 습사를 기록합니다.",
+      "url": "/home",
+      "icons": [{ "src": "/pwa-icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    },
+    {
+      "name": "기록 분석",
+      "short_name": "분석",
+      "description": "내 기록 흐름을 확인합니다.",
+      "url": "/stats",
+      "icons": [{ "src": "/pwa-icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    },
+    {
+      "name": "랭킹",
+      "short_name": "랭킹",
+      "description": "명중률과 다사 랭킹을 확인합니다.",
+      "url": "/ranking",
+      "icons": [{ "src": "/pwa-icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    }
+  ]
+}
