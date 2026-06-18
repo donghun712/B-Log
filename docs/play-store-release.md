@@ -22,7 +22,7 @@ Important: package names are unique and permanent in Play Console. Confirm this 
   - `public/pwa-icon-512.png`
   - `public/pwa-icon-maskable-512.png`
 - Store listing Korean draft: present under `play-store/listing/ko-KR/`
-- Digital Asset Links template: `public/.well-known/assetlinks.template.json`
+- Digital Asset Links file: create `public/.well-known/assetlinks.json` after the Play App Signing SHA-256 fingerprint is available
 - Final Android App Bundle (`.aab`): not generated yet
 - Play App Signing SHA-256 fingerprint: not available yet
 
@@ -54,16 +54,27 @@ For Play Store upload, generate an Android App Bundle (`.aab`) if the toolchain 
 
 ### Digital Asset Links
 
-After Play Console creates or shows the Play App Signing certificate, copy its SHA-256 fingerprint and replace the placeholder in:
-
-```text
-public/.well-known/assetlinks.template.json
-```
-
-Then publish it as:
+After Play Console creates or shows the Play App Signing certificate, copy its SHA-256 fingerprint and create:
 
 ```text
 public/.well-known/assetlinks.json
+```
+
+Use this shape and replace the package name or fingerprint only if they changed:
+
+```json
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.blog.b_log",
+      "sha256_cert_fingerprints": [
+        "REPLACE_WITH_PLAY_APP_SIGNING_SHA256_CERT_FINGERPRINT"
+      ]
+    }
+  }
+]
 ```
 
 Deploy Firebase Hosting again:
