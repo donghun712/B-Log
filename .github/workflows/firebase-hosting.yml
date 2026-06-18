@@ -105,8 +105,9 @@ jobs:
         run: |
           test -n "$FIREBASE_SERVICE_ACCOUNT_B_LOG_FFA4D"
           printf '%s' "$FIREBASE_SERVICE_ACCOUNT_B_LOG_FFA4D" > "$RUNNER_TEMP/firebase-service-account.json"
+          node -e "const fs=require('fs'); const json=JSON.parse(fs.readFileSync(process.argv[1], 'utf8')); if (!json.client_email || !json.private_key || !json.project_id) process.exit(1);" "$RUNNER_TEMP/firebase-service-account.json"
 
       - name: Deploy Hosting and Firestore rules
         env:
           GOOGLE_APPLICATION_CREDENTIALS: ${{ runner.temp }}/firebase-service-account.json
-        run: npx firebase-tools deploy --only hosting,firestore --project b-log-ffa4d
+        run: npx --yes firebase-tools deploy --non-interactive --only hosting,firestore --project b-log-ffa4d
